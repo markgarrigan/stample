@@ -10,15 +10,17 @@
     "local-web-server": "^2.6.1",
     "node-sass": "^4.11.0",
     "onchange": "^5.2.0",
+    "parcel-bundler": "^1.12.3",
     "postcss-cli": "^6.1.2",
     "uglify-es": "^3.3.9"
   },
   "scripts": {
-    "css": "node-sass src/assets/scss -o dist/assets",
-    "css:watch": "node-sass src/assets/scss -wro dist/assets",
-    "postcss": "postcss dist/assets/*.css -m --use autoprefixer -d dist/assets/",
-    "js": "uglifyjs src/assets/js/* -c --source-map --output dist/assets/main.min.js",
-    "js:watch": "onchange 'src/assets/js/*.js' -v -- npm run js",
+    "css": "node-sass src/assets/scss -o dist/assets/css",
+    "css:watch": "node-sass src/assets/scss -wro dist/assets/css",
+    "css:build": "postcss dist/assets/css/*.css -m --use autoprefixer -d dist/assets/css",
+    "js": "NODE_ENV=development parcel build src/assets/js/main.js --out-dir dist/assets/js --no-minify",
+    "js:watch": "parcel watch src/assets/js/main.js --out-dir dist/assets/js",
+    "js:build": "parcel build src/assets/js/main.js --out-dir dist/assets/js",
     "html": "html-includes --src src --dest dist",
     "html:watch": "html-includes --src src --dest dist --watch",
     "public": "cpx 'public/**/*' dist",
@@ -26,7 +28,7 @@
     "clean": "rm -rf dist",
     "predev": "npm run clean && npm run css && npm run js && npm run public && npm run html",
     "dev": "concurrently \"npm:css:watch\" \"npm:js:watch\" \"npm:public:watch\" \"npm:html:watch\" \"ws -p 2345 -d dist\"",
-    "build": "npm run predev",
+    "build": "npm run clean && npm run css && npm run css:build && npm run js:build && npm run public && npm run html",
     "sweepmac": "find . -name '.DS_Store' -type f -delete"
   }
 }
